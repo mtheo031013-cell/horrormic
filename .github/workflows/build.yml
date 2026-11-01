@@ -14,15 +14,19 @@ jobs:
           distribution: temurin
           java-version: 17
       - uses: gradle/actions/setup-gradle@v4
-      - name: Build
+      - name: Abrir o zip do projeto
         run: |
-          GRADLEW=$(find . -name gradlew -not -path './.git/*' | head -n1)
-          echo "gradlew encontrado em: $GRADLEW"
-          cd "$(dirname "$GRADLEW")"
+          rm -rf project
+          mkdir project
+          unzip -q voicehunter.zip -d project
+          ls project/voicehunter
+      - name: Build
+        working-directory: project/voicehunter
+        run: |
           chmod +x gradlew
           ./gradlew build --stacktrace
       - name: Upload the mod jar
         uses: actions/upload-artifact@v4
         with:
           name: voicehunter-jar
-          path: "**/build/libs/*.jar"
+          path: project/voicehunter/build/libs/*.jar
