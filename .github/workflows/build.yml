@@ -1,7 +1,10 @@
-name: Compilar mod
+name: Build mod
+
 on:
   push:
+  pull_request:
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -11,13 +14,13 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - name: Compilar
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build
         run: |
-          unzip -q horrormic.zip
-          cd horrormic
           chmod +x gradlew
-          ./gradlew build --no-daemon
-      - uses: actions/upload-artifact@v4
+          ./gradlew build --stacktrace
+      - name: Upload the mod jar
+        uses: actions/upload-artifact@v4
         with:
-          name: horrormic-jar
-          path: horrormic/build/libs/*.jar
+          name: voicehunter-jar
+          path: build/libs/*.jar
