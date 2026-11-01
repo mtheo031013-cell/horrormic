@@ -2,7 +2,6 @@ name: Build mod
 
 on:
   push:
-  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -17,10 +16,13 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Build
         run: |
+          GRADLEW=$(find . -name gradlew -not -path './.git/*' | head -n1)
+          echo "gradlew encontrado em: $GRADLEW"
+          cd "$(dirname "$GRADLEW")"
           chmod +x gradlew
           ./gradlew build --stacktrace
       - name: Upload the mod jar
         uses: actions/upload-artifact@v4
         with:
           name: voicehunter-jar
-          path: build/libs/*.jar
+          path: "**/build/libs/*.jar"
